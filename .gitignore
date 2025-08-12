@@ -1,0 +1,16 @@
+# IDE
+.idea
+.vscode
+
+.DS_Store
+*.tgz
+*.tar
+*.log
+
+# Python compiled files
+__pycache__
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# binary
+bin/*
