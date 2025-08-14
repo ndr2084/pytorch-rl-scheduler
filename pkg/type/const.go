@@ -10,6 +10,7 @@ const (
 	GpuPackingScorePluginName    = "GpuPackingScore"
 	BestFitScorePluginName       = "BestFitScore"
 	FGDScorePluginName           = "FGDScore"
+	RLSchedulerScorePluginName   = "RLSchedulerScore"
 
 	NewNodeNamePrefix    = "simon"
 	DefaultSchedulerName = "simon-scheduler"
