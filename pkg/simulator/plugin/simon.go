@@ -1,9 +1,13 @@
 package plugin
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"math"
+	"net/http"
+	"os"
 
 	log "github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
@@ -14,7 +18,6 @@ import (
 	resourcehelper "k8s.io/kubectl/pkg/util/resource"
 	framework "k8s.io/kubernetes/pkg/scheduler/framework"
 
-	"github.com/hkust-adsl/kubernetes-scheduler-simulator/pkg/algo"
 	simontype "github.com/hkust-adsl/kubernetes-scheduler-simulator/pkg/type"
 	"github.com/hkust-adsl/kubernetes-scheduler-simulator/pkg/type/open-gpu-share/utils"
 )
@@ -22,6 +25,23 @@ import (
 // SimonPlugin is a plugin for scheduling framework
 type SimonPlugin struct {
 	handle framework.Handle
+}
+
+type rlScoreRequest struct {
+	Pod  map[string]float64 `json:"pod"`
+	Node map[string]float64 `json:"node"`
+}
+
+type rlScoreResponse struct {
+	Score float64 `json:"score"`
+}
+
+func quantitiesToMap(rl corev1.ResourceList) map[string]float64 {
+	m := make(map[string]float64)
+	for name, qty := range rl {
+		m[string(name)] = qty.AsApproximateFloat64()
+	}
+	return m
 }
 
 var _ = framework.ScorePlugin(&SimonPlugin{})
@@ -56,18 +76,40 @@ func (plugin *SimonPlugin) Score(ctx context.Context, state *framework.CycleStat
 			framework.NewStatus(framework.Error, fmt.Sprintf("failed to get node %s: %s\n", nodeName, err.Error()))
 	}
 
-	res := float64(0)
-	for resourceName := range node.Status.Allocatable {
-		podAllocatedRes := podReq[resourceName]
-		nodeAvailableRes := node.Status.Allocatable[resourceName]
-		nodeAvailableRes.Sub(podAllocatedRes)
-		share := algo.Share(podAllocatedRes.AsApproximateFloat64(), nodeAvailableRes.AsApproximateFloat64())
-		if share > res {
-			res = share
-		}
+	req := rlScoreRequest{
+		Pod:  quantitiesToMap(podReq),
+		Node: quantitiesToMap(node.Status.Allocatable),
 	}
 
-	return int64(math.Round(float64(framework.MaxNodeScore-framework.MinNodeScore) * res)), framework.NewStatus(framework.Success)
+	endpoint := os.Getenv("SIMON_RL_ENDPOINT")
+	if endpoint == "" {
+		endpoint = "http://localhost:5000/score"
+	}
+
+	payload, err := json.Marshal(req)
+	if err != nil {
+		return int64(framework.MinNodeScore), framework.NewStatus(framework.Error, err.Error())
+	}
+	resp, err := http.Post(endpoint, "application/json", bytes.NewReader(payload))
+	if err != nil {
+		return int64(framework.MinNodeScore), framework.NewStatus(framework.Error, err.Error())
+	}
+	defer resp.Body.Close()
+
+	var r rlScoreResponse
+	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+		return int64(framework.MinNodeScore), framework.NewStatus(framework.Error, err.Error())
+	}
+
+	score := int64(math.Round(r.Score))
+	if score < framework.MinNodeScore {
+		score = framework.MinNodeScore
+	}
+	if score > framework.MaxNodeScore {
+		score = framework.MaxNodeScore
+	}
+
+	return score, framework.NewStatus(framework.Success)
 }
 
 // ScoreExtensions of the Score plugin.

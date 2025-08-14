@@ -26,6 +26,7 @@ SCORE_POLICY_ABBR = {
     "GpuPackingScore":    "GpuPacking",
     "BestFitScore":       "BestFit",
     "FGDScore":           "FGD",
+    "RLSchedulerScore":  "RLSched",
 }
 
 SCORE_PLUGINS_WITH_DIM_NORM_GPU_METHOD = [
@@ -36,6 +37,7 @@ SCORE_PLUGINS_WITH_PRE_FILTER = [
 ]
 SCORE_PLUGINS_WITH_PRE_SCORE = [
     "RandomScore",
+    "RLSchedulerScore",
 ]
 
 def get_args():
