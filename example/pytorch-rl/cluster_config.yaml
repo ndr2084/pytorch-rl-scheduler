@@ -1,0 +1,17 @@
+apiVersion: simon/v1alpha1
+kind: Config
+metadata:
+  name: pytorch-rl-config
+spec:
+  cluster:
+    customConfig: example/pytorch-rl
+  customConfig:
+    shufflePod: false
+    workloadTuningConfig:
+      ratio: 0.9
+      seed: 233
+    typicalPodsConfig:
+      isInvolvedCpuPods: true
+      podPopularityThreshold: 95
+      isConsideredGpuResWeight: false
+
