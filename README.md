@@ -1,17 +1,21 @@
 # 🚀 Kubernetes Scheduler Simulator
 
-The simulator evaluates different scheduling policies in GPU-sharing clusters.
-It includes the Fragmentation Gradient Descent (FGD) policy proposed in the ATC paper ([Beware of Fragmentation: Scheduling GPU-Sharing Workloads with Fragmentation Gradient Descent](https://www.usenix.org/conference/atc23/presentation/weng)), along with other baseline policies (e.g., Best-fit, Dot-product, GPU Packing, GPU Clustering, Random-fit). 
 
 ## 🚧 Environment Setup
 
-Please ensure that Go is installed.
+Please ensure that Go, pytorch, and flask are is installed.
 
 `go mod vendor` installs the dependencies required for the simulator. 
 
 ```bash
 $ go mod vendor
+$ pip install torch
+$ pip install flask
 ```
+
+After adding a new scheduler to ~./pkg/simulator/plguin, you must: 
+1. add the scheduler to the appropriate plugin options under func GetAndSetSchedulerConfig in ~./pkg/simulator/utils.go
+2. register the new policy under func New(opts ...Option) (Interface, error) in ~./pkg/simulator/simulator.go
 
 `make` generates the compiled binary files in the `bin` directory.
 
