@@ -4,7 +4,7 @@ metadata:
   name: pytorch-rl-config
 spec:
   cluster:
-    customConfig: example/pytorch-rl
+    customConfig: example/pytorch-rl/test-cluster
   customConfig:
     shufflePod: false
     workloadTuningConfig:
