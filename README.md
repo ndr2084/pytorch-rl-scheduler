@@ -57,8 +57,7 @@ experiments.  It traverses the data directory, finds each workload directory
 pod lists.  Node YAML documents are annotated with ``rack`` and ``server``
 labels to mimic a rack/server hierarchy.
 
-### 
-Usage
+### Usage
 
 Run the script from the repository root.  By default it targets the
 ``data`` directory relative to the current working directory and writes
