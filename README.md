@@ -18,7 +18,7 @@ $ go mod vendor
 `pip install torch` installs the dependencies required for the rl-based scheduler  
 `pip install flask` installs the dependencies required to capture the pods from the cluster and assign scores via http requests  
 `pip install numpy` torch has dependency on numpy  
-for convenience, we have added torch and flask in the requirements.txt file provided
+✅for convenience, we have added torch and flask in the requirements.txt file provided
 
 ```bash
 $ pip install -r requirements.txt
