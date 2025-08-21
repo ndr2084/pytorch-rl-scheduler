@@ -28,6 +28,14 @@ $ make
 ```
 
 ## 🔥 Quickstart Example
+##
+🚧 Allow the MLP to receive http requests from the rl_scheduler_score.go plugin  
+
+in directory `~./example/pytorch-rl`, run the scheduler so it can capture the pods from the running cluster.
+
+```bash
+$ python rl_service.py
+```
 
 The following example will schedule 6 pods to a cluster with 2 nodes, and the expected output will show the allocation ratio of each resource dimension (CPU, memory, GPU).
 The default scheduling policy is fragmentation gradient descent (FGD).
@@ -37,14 +45,7 @@ $ bin/simon apply --extended-resources "gpu" \
                   -f path/to/test-cluster-config.yaml \
                   -s path/to/test-scheduler-config.yaml
 ```
-##
-🚧 Allow the MLP to receive http requests from the rl_scheduler_score.go plugin  
 
-in directory `~./example/pytorch-rl`, run the scheduler so it can capture the pods from the running cluster.
-
-```bash
-$ python rl_service.py
-```
 
 ## 🚧  Create a Topolty Aware Cluster
 ================================
