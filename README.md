@@ -28,7 +28,7 @@ $ make
 ```
 
 ## 🔥 Quickstart Example
-🚧 Allow the MLP to receive http requests from the rl_scheduler_score.go plugin  
+# 🚧 Allow the MLP to receive http requests from the rl_scheduler_score.go plugin  
 
 in directory `~./example/pytorch-rl`, run the scheduler so it can capture the pods from the running cluster.
 
