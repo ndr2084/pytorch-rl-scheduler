@@ -59,7 +59,6 @@ labels to mimic a rack/server hierarchy.
 
 ### 
 Usage
------
 
 Run the script from the repository root.  By default it targets the
 ``data`` directory relative to the current working directory and writes
