@@ -11,7 +11,7 @@ This project seeks to extend the functionality of the simulator developed by [hk
 `go mod vendor` installs the dependencies required for the simulator  
 `pip install torch` installs the dependencies requires for the rl-based scheduler  
 `pip install flask` installs the dependencies required to capture the pods from the cluster and assign scores via http requests  
-`pip install numpy` torch has dependency on numpy
+`pip install numpy` torch has dependency on numpy  
 `pip install -r requirements.txt` as specified by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator)
 
 ```bash
