@@ -36,7 +36,7 @@ $ make
 ```
 You can follow steps 1 through 3 to implement your own scheduler as well
 
-## 🔥 Quickstart Example
+## 🔥 How The Go Plugin Scheduler and Python Scheduelr Communicate
 ### 🚧 Allow the MLP to receive http requests from the rl_scheduler_score.go plugin  
 
 in directory `~./example/pytorch-rl`, run the scheduler so it can capture the pod data that will be sent from `~./pkg/simulator/plguin/rl_scheduler_score.go`
