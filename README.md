@@ -26,15 +26,16 @@ After adding a new scheduler to `~./pkg/simulator/plguin`, we had to:
 1. add the scheduler to the appropriate plugin options under `func GetAndSetSchedulerConfig` in `~./pkg/simulator/utils.go`
 2. register the new policy under `func New(opts ...Option) (Interface, error)` in `~./pkg/simulator/simulator.go`
 3. `make` to generate the compiled binary files in the `bin` directory.
-
+   
 ```bash
 $ make
 ```
+You can follow steps 1 through 3 to implement your own scheduler as well
 
 ## 🔥 Quickstart Example
 ### 🚧 Allow the MLP to receive http requests from the rl_scheduler_score.go plugin  
 
-in directory `~./example/pytorch-rl`, run the scheduler so it can capture the pods from the running cluster.
+in directory `~./example/pytorch-rl`, run the scheduler so it can capture the pod data sent from `~./pkg/simulator/plguin/rl_scheduler_score.go`
 
 ```bash
 $ python rl_service.py
