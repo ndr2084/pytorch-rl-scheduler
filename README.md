@@ -44,6 +44,7 @@ in directory `~./example/pytorch-rl`, run the scheduler so it can capture the po
 
 ```bash
 $ python rl_service.py
+```
 
 ##
 🚧 create_hierarchical_yamls.py
