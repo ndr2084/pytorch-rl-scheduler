@@ -36,8 +36,7 @@ in directory `~./example/pytorch-rl`, run the scheduler so it can capture the po
 $ python rl_service.py
 ```
 
-The following example will schedule 6 pods to a cluster with 2 nodes, and the expected output will show the allocation ratio of each resource dimension (CPU, memory, GPU).
-The default scheduling policy is fragmentation gradient descent (FGD).
+To create the simulation, both a cluster configuration file and a scheduler configuration file need to be passed as parameters to `simon apply` 
 
 ```bash
 $ bin/simon apply --extended-resources "gpu" \
