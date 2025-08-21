@@ -8,8 +8,12 @@ import (
 	"net/http"
 	"os"
 
+	log "github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	externalclientset "k8s.io/client-go/kubernetes"
+	fakeclientset "k8s.io/client-go/kubernetes/fake"
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 
 	simontype "github.com/hkust-adsl/kubernetes-scheduler-simulator/pkg/type"
@@ -24,6 +28,7 @@ type RLSchedulerScorePlugin struct {
 
 var _ framework.ScorePlugin = &RLSchedulerScorePlugin{}
 var _ framework.PreScorePlugin = &RLSchedulerScorePlugin{}
+var _ framework.BindPlugin = &RLSchedulerScorePlugin{}
 
 const rlScoreStateKey = "PreScore-RLSchedulerScorePlugin"
 
@@ -115,3 +120,37 @@ func (p *RLSchedulerScorePlugin) Score(ctx context.Context, state *framework.Cyc
 
 // ScoreExtensions is not used.
 func (p *RLSchedulerScorePlugin) ScoreExtensions() framework.ScoreExtensions { return nil }
+
+
+// Bind binds the pod to the given node. It mirrors the default binding
+// behaviour used by other simulator plugins.
+func (p *RLSchedulerScorePlugin) Bind(ctx context.Context, state *framework.CycleState, pod *corev1.Pod, nodeName string) *framework.Status {
+	log.Debugf("bind pod(%s/%s) to node(%s)\n", pod.Namespace, pod.Name, nodeName)
+	switch t := p.handle.ClientSet().(type) {
+	case *externalclientset.Clientset:
+		binding := &corev1.Binding{
+			ObjectMeta: metav1.ObjectMeta{Namespace: pod.Namespace, Name: pod.Name, UID: pod.UID},
+			Target:     corev1.ObjectReference{Kind: "Node", Name: nodeName},
+		}
+		if err := p.handle.ClientSet().CoreV1().Pods(binding.Namespace).Bind(ctx, binding, metav1.CreateOptions{}); err != nil {
+			log.Errorf("bind error %v", err)
+			return framework.NewStatus(framework.Error, fmt.Sprintf("Unable to add new pod: %v", err))
+		}
+	case *fakeclientset.Clientset:
+		podCopy, err := p.handle.ClientSet().CoreV1().Pods(pod.Namespace).Get(ctx, pod.Name, metav1.GetOptions{})
+		if err != nil {
+			return framework.NewStatus(framework.Error, fmt.Sprintf("Failed to get pod %s/%s: %v", pod.Namespace, pod.Name, err))
+		}
+
+		updatePod := podCopy.DeepCopy()
+		updatePod.Spec.NodeName = nodeName
+		updatePod.Status.Phase = corev1.PodRunning
+
+		if _, err = p.handle.ClientSet().CoreV1().Pods(pod.Namespace).Update(ctx, updatePod, metav1.UpdateOptions{}); err != nil {
+			return framework.NewStatus(framework.Error, fmt.Sprintf("Failed to update pod %s/%s: %v", pod.Namespace, pod.Name, err))
+		}
+	default:
+		return framework.NewStatus(framework.Error, fmt.Sprintf("Unknown client type: %T", t))
+	}
+	return nil
+}
