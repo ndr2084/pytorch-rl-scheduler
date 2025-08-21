@@ -279,7 +279,7 @@ func GetAndSetSchedulerConfig(schedulerConfig string) (*config.CompletedConfig, 
 	kcfg.Profiles[0].Plugins.Bind = &kubeschedulerconfig.PluginSet{
 		Enabled: []kubeschedulerconfig.Plugin{
 			{
-				Name: simontype.SimonPluginName,
+				Name: simontype.RLSchedulerScorePluginName,
 			},
 		},
 		Disabled: []kubeschedulerconfig.Plugin{
