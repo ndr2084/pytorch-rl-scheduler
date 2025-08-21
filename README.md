@@ -49,9 +49,9 @@ $ bin/simon apply --extended-resources "gpu" \
 ```
 
 
-## 🚧  Create a Topology Aware Cluster
+## 🚧  Topology Aware Functionality Added 
 
-This script prepares hierarchical cluster YAMLs for the Kubernetes simulator
+`~./create_hierarchical_yamls.py` prepares hierarchical cluster YAMLs for the Kubernetes simulator
 experiments.  It traverses the data directory, finds each workload directory
 (matching ``openb_pod_list_*``), and produces modified copies of the node and
 pod lists.  Node YAML documents are annotated with ``rack`` and ``server``
