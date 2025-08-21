@@ -1,0 +1,133 @@
+TERMINAL INPUT: 
+pytorch-rl-scheduler$ bin/simon apply --extended-resources "gpu" -f example/pytorch-rl/test-cluster-config.yaml -s example/pytorch-rl/test-scheduler-config.yaml
+
+TERMINAL OUTPUT: 
+
+cluster.KubeConfig=
+cluster.CustomCluster=example/pytorch-rl/test-cluster
+INFO[0000] Scheduler Config: simon-scheduler            
+INFO[0000]   Filter Plugin                              
+INFO[0000]     Open-Gpu-Share                           
+INFO[0000]                                              
+INFO[0000]   Score Plugin                               
+INFO[0000]     RLSchedulerScore: 1000                   
+INFO[0000]                                              
+INFO[0000]   Reserve Plugin                             
+INFO[0000]     Open-Gpu-Share                           
+INFO[0000]                                              
+INFO[0000]   Bind Plugin                                
+INFO[0000]     Simon                                    
+INFO[0000]                                              
+INFO[0000]   pluginConfig                               
+INFO[0000]     Open-Gpu-Share                           
+INFO[0000]       {"dimExtMethod":"share","gpuSelMethod":"RLSchedulerScore","normMethod":"max"} 
+INFO[0000]     RLSchedulerScore                         
+INFO[0000]       {"programPath":"rl_service.py"}        
+INFO[0000]                                              
+INFO[0000] Number of original workload pods: 3          
+INFO[0000] Num of Total Pods: 3                         
+INFO[0000]   PureCpu Pods: 1 (33.33%)                   
+INFO[0000]   ShareGpu Pods: 1 (33.33%)                  
+INFO[0000]   OneGpu Pods: 0 (0.00%)                     
+INFO[0000]   TwoGpu Pods: 1 (33.33%)                    
+INFO[0000]   FourGpu Pods: 0 (0.00%)                    
+INFO[0000]   EightGpu Pods: 0 (0.00%)                   
+INFO[0000]   Others Pods: 0 (0.00%)                     
+INFO[0000] Num of Total Pod Sepc: 3                     
+INFO[0000] [0] <CPU:  12.00, GPU: 2 x {1000}m ()>: 1 (33.33%, cumsum: 33.33%) 
+INFO[0000] [1] <CPU:   8.00, GPU: 0 x {0   }m ()>: 1 (33.33%, cumsum: 66.67%) 
+INFO[0000] [2] <CPU:   4.00, GPU: 1 x {500 }m ()>: 1 (33.33%, cumsum: 100.00%) 
+INFO[0000] Count top 3 pod resource spec as typical ones, accounting for 100.00% of all pods 
+INFO[0000]                                              
+INFO[0000] Number of Skyline Pods: 2                    
+INFO[0000] [0] <CPU:   4.00, GPU: 1 x {500 }m ()>       
+INFO[0000] [1] <CPU:   8.00, GPU: 0 x {0   }m ()>       
+INFO[0000] Total milli cpu request of all pods: 24000, milli gpu request: 2500 
+INFO[0000] Total milli cpu of all nodes: 128000, milli gpu: 6000 
+INFO[0000] [Tune] Num of Pods before Tuning: 3          
+INFO[0000] [Tune] 2500 vs 5400.00 (0.90 * 6000)         
+INFO[0000] [Tune] Num of Pods after Tuning: 6           
+INFO[0000] [0] attempt to create pod(pai-gpu/gpu-pod-00) 
+E0820 22:27:17.881889 2641639 framework.go:664] "Failed running Score plugins" err="plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-00"
+E0820 22:27:17.882037 2641639 scheduler.go:497] "Error selecting node for pod" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-00"
+E0820 22:27:17.882096 2641639 factory.go:337] "Error scheduling pod; retrying" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-00"
+INFO[0000] [deletePod] attempt to delete a non-scheduled pod(pai-gpu/gpu-pod-00) 
+INFO[0000] [0] failed to schedule pod(pai-gpu/gpu-pod-00): <CPU:   4.00, GPU: 1 x {500 }m ()> 
+INFO[0000] [Report]; Frag amount: 2000.00; Frag ratio: 33.33%; Q124 ratio: 0.00%; (origin) 
+INFO[0000] [Report]; Frag amount: 1066.89; Frag ratio: 17.78%; (bellman) 
+INFO[0000] [Alloc]; Used nodes: 0; Used GPUs: 0; Used GPU Milli: 0; Total GPUs: 6; Arrived GPU Milli: 500 
+INFO[0000] [1] attempt to create pod(pai-gpu/gpu-pod-01) 
+E0820 22:27:17.891154 2641639 framework.go:664] "Failed running Score plugins" err="plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-01"
+E0820 22:27:17.891190 2641639 scheduler.go:497] "Error selecting node for pod" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-01"
+E0820 22:27:17.891220 2641639 factory.go:337] "Error scheduling pod; retrying" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-01"
+INFO[0000] [deletePod] attempt to delete a non-scheduled pod(pai-gpu/gpu-pod-01) 
+INFO[0000] [1] failed to schedule pod(pai-gpu/gpu-pod-01): <CPU:   8.00, GPU: 0 x {0   }m ()> 
+INFO[0000] [Report]; Frag amount: 2000.00; Frag ratio: 33.33%; Q124 ratio: 0.00%; (origin) 
+INFO[0000] [Report]; Frag amount: 1066.89; Frag ratio: 17.78%; (bellman) 
+INFO[0000] [Alloc]; Used nodes: 0; Used GPUs: 0; Used GPU Milli: 0; Total GPUs: 6; Arrived GPU Milli: 500 
+INFO[0000] [2] attempt to create pod(pai-gpu/gpu-pod-02) 
+E0820 22:27:17.895657 2641639 framework.go:664] "Failed running Score plugins" err="plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-02"
+E0820 22:27:17.895701 2641639 scheduler.go:497] "Error selecting node for pod" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-02"
+E0820 22:27:17.895748 2641639 factory.go:337] "Error scheduling pod; retrying" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-02"
+INFO[0000] [deletePod] attempt to delete a non-scheduled pod(pai-gpu/gpu-pod-02) 
+INFO[0000] [2] failed to schedule pod(pai-gpu/gpu-pod-02): <CPU:  12.00, GPU: 2 x {1000}m ()> 
+INFO[0000] [Report]; Frag amount: 2000.00; Frag ratio: 33.33%; Q124 ratio: 0.00%; (origin) 
+INFO[0000] [Report]; Frag amount: 1066.89; Frag ratio: 17.78%; (bellman) 
+INFO[0000] [Alloc]; Used nodes: 0; Used GPUs: 0; Used GPU Milli: 0; Total GPUs: 6; Arrived GPU Milli: 2500 
+INFO[0000] [3] attempt to create pod(pai-gpu/gpu-pod-01-tuned-0) 
+E0820 22:27:17.899311 2641639 framework.go:664] "Failed running Score plugins" err="plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-01-tuned-0"
+E0820 22:27:17.899349 2641639 scheduler.go:497] "Error selecting node for pod" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-01-tuned-0"
+E0820 22:27:17.899392 2641639 factory.go:337] "Error scheduling pod; retrying" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-01-tuned-0"
+INFO[0000] [deletePod] attempt to delete a non-scheduled pod(pai-gpu/gpu-pod-01-tuned-0) 
+INFO[0000] [3] failed to schedule pod(pai-gpu/gpu-pod-01-tuned-0): <CPU:   8.00, GPU: 0 x {0   }m ()> 
+INFO[0000] [Report]; Frag amount: 2000.00; Frag ratio: 33.33%; Q124 ratio: 0.00%; (origin) 
+INFO[0000] [Report]; Frag amount: 1066.89; Frag ratio: 17.78%; (bellman) 
+INFO[0000] [Alloc]; Used nodes: 0; Used GPUs: 0; Used GPU Milli: 0; Total GPUs: 6; Arrived GPU Milli: 2500 
+INFO[0000] [4] attempt to create pod(pai-gpu/gpu-pod-02-tuned-1) 
+E0820 22:27:17.904008 2641639 framework.go:664] "Failed running Score plugins" err="plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-02-tuned-1"
+E0820 22:27:17.904056 2641639 scheduler.go:497] "Error selecting node for pod" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-02-tuned-1"
+E0820 22:27:17.904096 2641639 factory.go:337] "Error scheduling pod; retrying" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-02-tuned-1"
+INFO[0000] [deletePod] attempt to delete a non-scheduled pod(pai-gpu/gpu-pod-02-tuned-1) 
+INFO[0000] [4] failed to schedule pod(pai-gpu/gpu-pod-02-tuned-1): <CPU:  12.00, GPU: 2 x {1000}m ()> 
+INFO[0000] [Report]; Frag amount: 2000.00; Frag ratio: 33.33%; Q124 ratio: 0.00%; (origin) 
+INFO[0000] [Report]; Frag amount: 1066.89; Frag ratio: 17.78%; (bellman) 
+INFO[0000] [Alloc]; Used nodes: 0; Used GPUs: 0; Used GPU Milli: 0; Total GPUs: 6; Arrived GPU Milli: 4500 
+INFO[0000] [5] attempt to create pod(pai-gpu/gpu-pod-01-tuned-2) 
+E0820 22:27:17.907171 2641639 framework.go:664] "Failed running Score plugins" err="plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-01-tuned-2"
+E0820 22:27:17.907205 2641639 scheduler.go:497] "Error selecting node for pod" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-01-tuned-2"
+E0820 22:27:17.907228 2641639 factory.go:337] "Error scheduling pod; retrying" err="running Score plugins: plugin \"RLSchedulerScore\" failed with: reading \"PreScore-RLSchedulerScorePlugin\" from cycleState: not found" pod="pai-gpu/gpu-pod-01-tuned-2"
+INFO[0000] [deletePod] attempt to delete a non-scheduled pod(pai-gpu/gpu-pod-01-tuned-2) 
+INFO[0000] [5] failed to schedule pod(pai-gpu/gpu-pod-01-tuned-2): <CPU:   8.00, GPU: 0 x {0   }m ()> 
+INFO[0000] [Report]; Frag amount: 2000.00; Frag ratio: 33.33%; Q124 ratio: 0.00%; (origin) 
+INFO[0000] [Report]; Frag amount: 1066.89; Frag ratio: 17.78%; (bellman) 
+INFO[0000] [Alloc]; Used nodes: 0; Used GPUs: 0; Used GPU Milli: 0; Total GPUs: 6; Arrived GPU Milli: 4500 
+INFO[0000] Failed Pods in detail:                       
+INFO[0000]   pai-gpu/gpu-pod-00: <CPU:   4.00, GPU: 1 x {500 }m ()> 
+INFO[0000]   pai-gpu/gpu-pod-01: <CPU:   8.00, GPU: 0 x {0   }m ()> 
+INFO[0000]   pai-gpu/gpu-pod-02: <CPU:  12.00, GPU: 2 x {1000}m ()> 
+INFO[0000]   pai-gpu/gpu-pod-01-tuned-0: <CPU:   8.00, GPU: 0 x {0   }m ()> 
+INFO[0000]   pai-gpu/gpu-pod-02-tuned-1: <CPU:  12.00, GPU: 2 x {1000}m ()> 
+INFO[0000]   pai-gpu/gpu-pod-01-tuned-2: <CPU:   8.00, GPU: 0 x {0   }m ()> 
+INFO[0000]                                              
+INFO[0000]                                              
+INFO[0000] ========== Cluster Analysis Results (InitSchedule) ========== 
+INFO[0000] Allocation Ratio:                            
+INFO[0000]     MilliCpuLeft:  0.0% (0/128000)           
+INFO[0000]     Memory  :  0.0% (0/536870912000)         
+INFO[0000]     Gpu     :  0.0% (0/6)                    
+INFO[0000]     MilliGpu:  0.0% (0/6000)                 
+INFO[0000] q1_lack_both :   0.00 x 10^3 ( 0.00%)        
+INFO[0000] q2_lack_gpu  :   0.00 x 10^3 ( 0.00%)        
+INFO[0000] q3_satisfied :   4.00 x 10^3 (66.67%)        
+INFO[0000] q4_lack_cpu  :   0.00 x 10^3 ( 0.00%)        
+INFO[0000] xl_satisfied :   2.00 x 10^3 (33.33%)        
+INFO[0000] xr_lack_cpu  :   0.00 x 10^3 ( 0.00%)        
+INFO[0000] no_access    :   0.00 x 10^3 ( 0.00%)        
+INFO[0000] --------------------                         
+INFO[0000] idle_gpu_milli:   6.00 x 10^3 (100.0%)       
+INFO[0000] frag_gpu_milli:   2.00 x 10^3 (33.33%)       
+INFO[0000] ============================================== 
+INFO[0000]                                              
+there are 6 unscheduled pods
+INFO[0000] there are 6 unscheduled pods                 
+Failed!
