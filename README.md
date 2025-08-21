@@ -46,8 +46,7 @@ in directory `~./example/pytorch-rl`, run the scheduler so it can capture the po
 $ python rl_service.py
 ```
 
-##
-🚧 create_hierarchical_yamls.py
+## 🚧  Create a Topolty Aware Cluster
 ================================
 
 This script prepares hierarchical cluster YAMLs for the Kubernetes simulator
