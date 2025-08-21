@@ -6,11 +6,8 @@ This project seeks to extend the functionality of the simulator developed by [hk
 
 
 ## 🚧 Environment Setup
-
-Ensure that you have the environment set up to all versions specified by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator) before proceeding beyond this point
-
-Please ensure that Go, pytorch, and flask are is installed.
-
+1. Ensure that you have the environment set up to all versions specified by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator) before proceeding beyond this point.
+2. Please ensure that Go, pytorch, and flask are is installed:  
 `go mod vendor` installs the dependencies required for the simulator  
 `pip install torch` installs the dependencies requires for the rl-based scheduler  
 `pip install flask` installs the dependencies required to capture the pods from the cluster and assign scores via http requests  
