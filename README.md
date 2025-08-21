@@ -8,6 +8,7 @@ Please ensure that Go, pytorch, and flask are is installed.
 `go mod vendor` installs the dependencies required for the simulator  
 `pip install torch` installs the dependencies requires for the rl-based scheduler  
 `pip install flask` installs the dependencies required to capture the pods from the cluster and assign scores via http requests  
+`pip install numpy` torch has dependency on numpy
 
 ```bash
 $ go mod vendor
