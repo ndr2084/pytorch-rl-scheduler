@@ -21,6 +21,8 @@ $ pip install flask
 $ pip install numpy
 ```
 
+## 🤔 How The Scheduler Was Implemented
+
 After adding a new scheduler to `~./pkg/simulator/plguin`, you must: 
 1. add the scheduler to the appropriate plugin options under `func GetAndSetSchedulerConfig` in `~./pkg/simulator/utils.go`
 2. register the new policy under `func New(opts ...Option) (Interface, error)` in `~./pkg/simulator/simulator.go`
