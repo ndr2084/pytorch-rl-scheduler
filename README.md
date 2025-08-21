@@ -30,8 +30,8 @@ The default scheduling policy is fragmentation gradient descent (FGD).
 
 ```bash
 $ bin/simon apply --extended-resources "gpu" \
-                  -f example/test-cluster-config.yaml \
-                  -s example/test-scheduler-config.yaml
+                  -f path/to/test-cluster-config.yaml \
+                  -s path/to/test-scheduler-config.yaml
 ```
 
 ##
