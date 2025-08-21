@@ -2,7 +2,6 @@ TERMINAL INPUT:
 pytorch-rl-scheduler$ bin/simon apply --extended-resources "gpu" -f example/pytorch-rl/test-cluster-config.yaml -s example/pytorch-rl/test-scheduler-config.yaml
 
 TERMINAL OUTPUT: 
-
 cluster.KubeConfig=
 cluster.CustomCluster=example/pytorch-rl/test-cluster
 INFO[0000] Scheduler Config: simon-scheduler            
