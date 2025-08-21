@@ -37,6 +37,13 @@ $ bin/simon apply --extended-resources "gpu" \
                   -f path/to/test-cluster-config.yaml \
                   -s path/to/test-scheduler-config.yaml
 ```
+##
+🚧 Allow the MLP to receive http requests from the rl_scheduler_score.go plugin  
+
+in directory `~./example/pytorch-rl`, run the scheduler so it can capture the pods from the running cluster.
+
+```bash
+$ python rl_service.py
 
 ##
 🚧 create_hierarchical_yamls.py
