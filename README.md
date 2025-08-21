@@ -26,8 +26,7 @@ $ pip install numpy
 After adding a new scheduler to `~./pkg/simulator/plguin`, we had to: 
 1. add the scheduler to the appropriate plugin options under `func GetAndSetSchedulerConfig` in `~./pkg/simulator/utils.go`
 2. register the new policy under `func New(opts ...Option) (Interface, error)` in `~./pkg/simulator/simulator.go`
-
-`make` generates the compiled binary files in the `bin` directory.
+3. `make` to generate the compiled binary files in the `bin` directory.
 
 ```bash
 $ make
