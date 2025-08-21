@@ -37,7 +37,7 @@ $ make
 You can follow steps 1 through 3 to implement your own scheduler as well
 
 ## 🔥 How rl_scheduler_score.go Communicates With rl_service.py 
-### 🚧 Allow the MLP to receive http requests from the rl_scheduler_score.go plugin  
+### 🚧 Allow the MLP (i.e. rl_service.py) to receive http requests from the rl_scheduler_score.go plugin  
 
 in directory `~./example/pytorch-rl`, run the scheduler so it can capture the pod data that will be sent from `~./pkg/simulator/plguin/rl_scheduler_score.go`
 
