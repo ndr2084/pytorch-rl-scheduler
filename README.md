@@ -2,10 +2,12 @@
 
 ## 🙏🏻 Acknowledge
 
-This project seeks to extend the functionality of the simulator developed by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator)
+This project seeks to extend the functionality of the simulator developed by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator). 
 
 
 ## 🚧 Environment Setup
+
+Ensure that you have the environment set up to all versions specified by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator) before proceeding beyond this point
 
 Please ensure that Go, pytorch, and flask are is installed.
 
