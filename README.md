@@ -71,7 +71,7 @@ For example:
 
 ```bash
 
-$ python3 create_hierarchical_yamls.py \
+$ python create_hierarchical_yamls.py \
        --data-dir ./data \
        --servers-per-rack 4
 ```
