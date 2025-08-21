@@ -1,5 +1,9 @@
 # 🚀 Kubernetes Scheduler Simulator
 
+## 🙏🏻 Acknowledge
+
+This project seeks to extend the functionality of the simulator developed by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator)
+
 
 ## 🚧 Environment Setup
 
@@ -99,10 +103,6 @@ $ pip install -r requirements.txt
 
 1. Please refer to [README](data/README.md) under the `data` directory to prepare production traces.
 2. Then refer to [README](experiments/README.md) under the `experiments` directory to reproduce the results reported in the paper.
-
-## 🙏🏻 Acknowledge
-
-This project seeks to extend the functionality of the simulator developed by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator)
 
 ## ⏳ TODO
 
