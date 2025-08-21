@@ -34,6 +34,52 @@ $ bin/simon apply --extended-resources "gpu" \
                   -s example/test-scheduler-config.yaml
 ```
 
+##
+🚧 create_hierarchical_yamls.py
+================================
+
+This script prepares hierarchical cluster YAMLs for the Kubernetes simulator
+experiments.  It traverses the data directory, finds each workload directory
+(matching ``openb_pod_list_*``), and produces modified copies of the node and
+pod lists.  Node YAML documents are annotated with ``rack`` and ``server``
+labels to mimic a rack/server hierarchy.
+
+### 
+Usage
+-----
+
+Run the script from the repository root.  By default it targets the
+``data`` directory relative to the current working directory and writes
+modified YAMLs beside the originals with a ``-hier`` suffix.  You can
+override the base directory, the number of servers per rack, and the
+name of the custom scheduler via command‑line flags.
+
+For example:
+
+```bash
+
+   python3 create_hierarchical_yamls.py \
+       --data-dir ./data \
+       --servers-per-rack 4
+```
+
+This will produce files such as ``openb_node_list_gpu_node-hier.yaml``
+and ``openb_pod_list_cpu050-hier.yaml`` in each ``openb_pod_list_*``
+directory under ``./data``.
+
+Racks and servers are assigned deterministically based on the order of
+nodes in the node list: the first ``servers_per_rack`` nodes go into
+rack 0 (servers 0, 1, …), the next ``servers_per_rack`` nodes go into
+rack 1, and so on.  Adjust ``servers_per_rack`` for your own topology.
+
+### note
+
+   The external RL scheduler is responsible for
+   deciding which node each pod should bind to.  If you wish to restrict
+   certain pods to specific racks or servers, you can further modify the
+   generated YAMLs to include ``nodeSelector`` fields, but doing so
+   bypasses the RL scheduler’s decision making.
+
 ## 🔮 Experiments on Production Traces
 
 Install the required Python dependency environment.
@@ -45,28 +91,10 @@ $ pip install -r requirements.txt
 1. Please refer to [README](data/README.md) under the `data` directory to prepare production traces.
 2. Then refer to [README](experiments/README.md) under the `experiments` directory to reproduce the results reported in the paper.
 
-## 📝 Paper
-
-Please cite our paper if it is helpful to your research.
-
-```
-@inproceedings{FGD,
-    title = {Beware of Fragmentation: Scheduling GPU-Sharing Workloads with Fragmentation Gradient Descent},
-    author = {Qizhen Weng and Lingyun Yang and Yinghao Yu and Wei Wang and Xiaochuan Tang and Guodong Yang and Liping Zhang},
-    booktitle = {2023 {USENIX} Annual Technical Conference},
-    year = {2023},
-    series = {{USENIX} {ATC} '23}
-    url = {https://www.usenix.org/conference/atc23/presentation/weng},
-    publisher = {{USENIX} Association},
-}
-```
-
 ## 🙏🏻 Acknowledge
 
-Our simulator is developed based on [open-simulator](https://github.com/alibaba/open-simulator) by Alibaba, a simulator used for cluster capacity planning. 
-This repository primarily evaluates the performance of different scheduling polices on production traces.
-GPU-related plugin has been merged into the main branch of [open-simulator](https://github.com/alibaba/open-simulator).
+This project seeks to extend the functionality of the simulator developed by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator)
 
 ## ⏳ TODO
 
-- [ ] Add a minikube running example to demonstrate how the simulator schedules pods in a **real** Kubernetes cluster.
+- [ ] Currently Pods are not being assigned to nodes. It needs to be determined whether `~./example/pytorch-rl/rl_policy.py` and/or `~./pkg/simulator/plugin/rl_scheduler_score.go` are to blame
