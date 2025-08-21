@@ -108,5 +108,5 @@ This project seeks to extend the functionality of the simulator developed by [hk
 
 - [ ] Currently Pods are not being assigned to nodes. It needs to be determined whether:
   `~./example/pytorch-rl/rl_policy.py`  and/or
-  `~./pkg/simulator/plugin/rl_scheduler_score.go` are to blame
+  `~./pkg/simulator/plugin/rl_scheduler_score.go` are to blame  
 [failure_log.txt](https://github.com/ndr2084/pytorch-rl-scheduler/blob/main/failure_log.txt) logs the failed integration of implementing our MLP based scheduler on the cluster  
