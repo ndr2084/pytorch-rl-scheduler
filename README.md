@@ -7,7 +7,7 @@ This project seeks to extend the functionality of the simulator developed by [hk
 
 ## 🚧 Environment Setup  
 
-1.Please ensure that Go is installed.
+1. Please ensure that Go is installed.
 
 `go mod vendor` installs the dependencies required for the simulator. 
 
