@@ -13,6 +13,7 @@ Please ensure that Go, pytorch, and flask are is installed.
 $ go mod vendor
 $ pip install torch
 $ pip install flask
+$ pip install numpy
 ```
 
 After adding a new scheduler to `~./pkg/simulator/plguin`, you must: 
