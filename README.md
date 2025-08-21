@@ -1,4 +1,4 @@
-# 🚀 Kubernetes Scheduler Simulator
+# 🚀 Kubernetes Scheduler Simulator With an MLP Scheduler
 
 ## 🙏🏻 Acknowledge
 
