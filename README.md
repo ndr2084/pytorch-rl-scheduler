@@ -6,18 +6,20 @@ This project seeks to extend the functionality of the simulator developed by [hk
 
 
 ## 🚧 Environment Setup
-1. Ensure that you have the environment set up to all versions specified by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator) before proceeding beyond this point.
+1. Ensure that you have the environment set up to all versions specified by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator) before proceeding beyond this point. This includes `pip install 🔮 Experiments on Production Traces
 2. Please ensure that Go, pytorch, and flask are is installed:  
 `go mod vendor` installs the dependencies required for the simulator  
 `pip install torch` installs the dependencies requires for the rl-based scheduler  
 `pip install flask` installs the dependencies required to capture the pods from the cluster and assign scores via http requests  
 `pip install numpy` torch has dependency on numpy
+`pip install -r requirements.txt` as specified by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator)
 
 ```bash
 $ go mod vendor
 $ pip install torch
 $ pip install flask
 $ pip install numpy
+$ pip install -r requirements.txt
 ```
 
 ## 🤔 How The Scheduler Was Implemented
@@ -82,25 +84,6 @@ Racks and servers are assigned deterministically based on the order of
 nodes in the node list: the first ``servers_per_rack`` nodes go into
 rack 0 (servers 0, 1, …), the next ``servers_per_rack`` nodes go into
 rack 1, and so on.  Adjust ``servers_per_rack`` for your own topology.
-
-### note
-
-   The external RL scheduler is responsible for
-   deciding which node each pod should bind to.  If you wish to restrict
-   certain pods to specific racks or servers, you can further modify the
-   generated YAMLs to include ``nodeSelector`` fields, but doing so
-   bypasses the RL scheduler’s decision making.
-
-## 🔮 Experiments on Production Traces
-
-Install the required Python dependency environment.
-
-```bash
-$ pip install -r requirements.txt
-```
-
-1. Please refer to [README](data/README.md) under the `data` directory to prepare production traces.
-2. Then refer to [README](experiments/README.md) under the `experiments` directory to reproduce the results reported in the paper.
 
 ## ⏳ TODO
 
