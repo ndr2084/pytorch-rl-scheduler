@@ -99,4 +99,6 @@ This project seeks to extend the functionality of the simulator developed by [hk
 
 ## ⏳ TODO
 
-- [ ] Currently Pods are not being assigned to nodes. It needs to be determined whether `~./example/pytorch-rl/rl_policy.py` and/or `~./pkg/simulator/plugin/rl_scheduler_score.go` are to blame
+- [ ] Currently Pods are not being assigned to nodes. It needs to be determined whether:
+  `~./example/pytorch-rl/rl_policy.py`  and/or
+  `~./pkg/simulator/plugin/rl_scheduler_score.go` are to blame
