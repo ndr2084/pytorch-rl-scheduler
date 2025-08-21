@@ -46,7 +46,6 @@ $ bin/simon apply --extended-resources "gpu" \
 
 
 ## 🚧  Create a Topolty Aware Cluster
-================================
 
 This script prepares hierarchical cluster YAMLs for the Kubernetes simulator
 experiments.  It traverses the data directory, finds each workload directory
