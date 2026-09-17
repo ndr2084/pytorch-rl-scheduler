@@ -26,18 +26,25 @@ SCORE_POLICY_ABBR = {
     "GpuPackingScore":    "GpuPacking",
     "BestFitScore":       "BestFit",
     "FGDScore":           "FGD",
-    "RLSchedulerScore":  "RLSched",
+    "RLScore":            "RL",
 }
 
 SCORE_PLUGINS_WITH_DIM_NORM_GPU_METHOD = [
     "DotProductScore", # dot product
     "FGDScore",        # FGD
 ]
+# Plugins that pick their own gpuSelMethod (i.e. Open-Gpu-Share's Reserve
+# should use *this* plugin's allocateGpuIdFunc) when they win the max score
+# weight -- a superset of SCORE_PLUGINS_WITH_DIM_NORM_GPU_METHOD, since
+# RLScore needs this too but does not take dimExtMethod/normMethod args.
+SCORE_PLUGINS_WITH_CUSTOM_GPU_SEL = SCORE_PLUGINS_WITH_DIM_NORM_GPU_METHOD + [
+    "RLScore",
+]
 SCORE_PLUGINS_WITH_PRE_FILTER = [
 ]
 SCORE_PLUGINS_WITH_PRE_SCORE = [
     "RandomScore",
-    "RLSchedulerScore",
+    "RLScore",  # batches every candidate node into one gRPC call; see rl_score.go PreScore
 ]
 
 def get_args():
@@ -79,8 +86,12 @@ def get_args():
                             help="GPU selection method: best, worst, random, default: best")
     parser.add_argument("-dimext", "--dim-ext-method", dest="dim_ext_method", type=str, default="share", 
                             help="Dimension extend method: merge, share, divide, extend, default: share")
-    parser.add_argument("-norm", "--norm-method", dest="norm_method", type=str, default="max", 
+    parser.add_argument("-norm", "--norm-method", dest="norm_method", type=str, default="max",
                             help="Norm method: node, pod, max, default: max")
+    parser.add_argument("--rl-inference-addr", type=str, default="localhost:50051",
+                            help="host:port of the RLScore policy server (rlscore/server.py), default: localhost:50051")
+    parser.add_argument("--rl-timeout-ms", type=int, default=100,
+                            help="per-RPC deadline in ms for RLScore's calls to the policy server, default: 100")
 
     args = parser.parse_args()
     return args
@@ -265,11 +276,15 @@ def generate_scheduler_config(args, outdir):
                 if item['weight'] > maxScoreWeight:
                     maxScoreName = item['name']
                     maxScoreWeight = item['weight']
-                ###: configure score plugins with the input "dimExtMethod" and "normMethod", works for SCORE_PLUGINS_WITH_DIM_NORM_GPU_METHOD
-                pc.append({'name': item['name'], 'args': {'dimExtMethod': args.dim_ext_method, 'normMethod': args.norm_method}})
-            if maxScoreName in SCORE_PLUGINS_WITH_DIM_NORM_GPU_METHOD:
+                if item['name'] == "RLScore":
+                    ###: RLScore doesn't take dimExtMethod/normMethod -- it dials a policy server instead
+                    pc.append({'name': item['name'], 'args': {'inferenceAddr': args.rl_inference_addr, 'timeoutMs': args.rl_timeout_ms}})
+                else:
+                    ###: configure score plugins with the input "dimExtMethod" and "normMethod", works for SCORE_PLUGINS_WITH_DIM_NORM_GPU_METHOD
+                    pc.append({'name': item['name'], 'args': {'dimExtMethod': args.dim_ext_method, 'normMethod': args.norm_method}})
+            if maxScoreName in SCORE_PLUGINS_WITH_CUSTOM_GPU_SEL:
                 ##: if the max-weight score requires gpuSelMethod and has its own opinions on "dim_ext_method"
-                if args.dim_ext_method != "merge":
+                if args.dim_ext_method != "merge" or maxScoreName == "RLScore":
                     ###: replacing the default gpuSelMethods (best, worst, random) with the implemented score plugins (use score plugin name as key).
                     args.gpu_sel_method = maxScoreName
             ###: normMethod should be set twice: in Open-Gpu-Share and in each score plugins

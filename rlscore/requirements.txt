@@ -1,0 +1,5 @@
+torch>=2.0
+grpcio>=1.60
+grpcio-tools>=1.60
+pandas>=1.5
+numpy>=1.24

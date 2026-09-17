@@ -14,6 +14,8 @@ require (
 	github.com/alibaba/open-local v0.2.4-0.20211118031547-952eadbb4a8e
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20211025201205-69cdffdb9359 // indirect
+	google.golang.org/grpc v1.36.0
+	google.golang.org/protobuf v1.26.0
 	helm.sh/helm/v3 v3.6.2
 	k8s.io/api v0.23.1
 	k8s.io/apimachinery v0.23.1

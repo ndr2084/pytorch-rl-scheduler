@@ -155,8 +155,8 @@ func New(opts ...Option) (Interface, error) {
 		simontype.FGDScorePluginName: func(configuration runtime.Object, handle framework.Handle) (framework.Plugin, error) {
 			return simonplugin.NewFGDScorePlugin(configuration, handle, &sim.typicalPods)
 		},
-		simontype.RLSchedulerScorePluginName: func(configuration runtime.Object, handle framework.Handle) (framework.Plugin, error) {
-			return simonplugin.NewRLSchedulerScorePlugin(configuration, handle)
+		simontype.RLScorePluginName: func(configuration runtime.Object, handle framework.Handle) (framework.Plugin, error) {
+			return simonplugin.NewRLScorePlugin(configuration, handle)
 		},
 	}
 	sim.scheduler, err = scheduler.New(

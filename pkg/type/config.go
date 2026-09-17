@@ -59,3 +59,12 @@ type OpenGpuSharePluginCfg struct {
 
 	GpuSelMethod GpuSelMethod `json:"gpuSelMethod,omitempty"`
 }
+
+type RLScorePluginCfg struct {
+	// InferenceAddr is the address (host:port) of the RL policy's gRPC inference server.
+	InferenceAddr string `json:"inferenceAddr,omitempty"`
+
+	// TimeoutMs bounds each inference RPC so a stuck/unreachable policy server
+	// cannot stall scheduling. Defaults to 100ms if unset or <= 0.
+	TimeoutMs int `json:"timeoutMs,omitempty"`
+}

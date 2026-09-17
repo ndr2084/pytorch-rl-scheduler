@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package rlscore;
+
+option go_package = "github.com/hkust-adsl/kubernetes-scheduler-simulator/pkg/rlscore/proto";
+
+// ResourceState mirrors simontype.NodeResource / simontype.PodResource enough
+// for a policy to score a placement: CPU/memory plus per-GPU free milli-GPU.
+message ResourceState {
+  double milli_cpu = 1;
+  double milli_cpu_left = 2;
+  double milli_gpu = 3; // per-GPU capacity (usually 1000)
+  repeated double milli_gpu_left_list = 4; // one entry per physical GPU on the node; empty for a pod request
+  int32 gpu_number = 5;
+  double milli_cpu_capacity = 6; // node's total CPU capacity; unset/0 when this message describes a pod
+}
+
+message ScoreRequest {
+  string pod_key = 1; // namespace/name, for logging/correlation
+  string node_name = 2;
+  ResourceState node = 3;
+  ResourceState pod = 4;
+}
+
+message ScoreResponse {
+  // Must land in [0, 100] (framework.MinNodeScore..MaxNodeScore).
+  int64 score = 1;
+  // Which physical/shared GPU index to bind to, "" if the pod does not request a fractional GPU.
+  string gpu_id = 2;
+}
+
+message BatchScoreRequest {
+  // One entry per candidate node for the same pod; lets the policy score
+  // all candidates for a scheduling cycle in a single round trip.
+  repeated ScoreRequest requests = 1;
+}
+
+message BatchScoreResponse {
+  // Same order and length as the corresponding BatchScoreRequest.requests.
+  repeated ScoreResponse responses = 1;
+}
+
+service RLScorer {
+  // ScorePlacement scores one (pod, node) candidate. Used directly from Score().
+  rpc ScorePlacement(ScoreRequest) returns (ScoreResponse);
+
+  // ScoreBatch scores every candidate node for one pod in a single call.
+  // Intended to be called once from PreScore() with results cached in CycleState,
+  // so Score() avoids a network round trip per node.
+  rpc ScoreBatch(BatchScoreRequest) returns (BatchScoreResponse);
+}

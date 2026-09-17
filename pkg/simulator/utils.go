@@ -235,9 +235,6 @@ func GetAndSetSchedulerConfig(schedulerConfig string) (*config.CompletedConfig, 
 			{
 				Name: simontype.RandomScorePluginName,
 			},
-			{
-				Name: simontype.RLSchedulerScorePluginName,
-			},
 		},
 	}
 	kcfg.Profiles[0].Plugins.Score = &kubeschedulerconfig.PluginSet{
@@ -256,9 +253,6 @@ func GetAndSetSchedulerConfig(schedulerConfig string) (*config.CompletedConfig, 
 			},
 			{
 				Name: simontype.FGDScorePluginName,
-			},
-			{
-				Name: simontype.RLSchedulerScorePluginName,
 			},
 		},
 	}
@@ -279,7 +273,7 @@ func GetAndSetSchedulerConfig(schedulerConfig string) (*config.CompletedConfig, 
 	kcfg.Profiles[0].Plugins.Bind = &kubeschedulerconfig.PluginSet{
 		Enabled: []kubeschedulerconfig.Plugin{
 			{
-				Name: simontype.RLSchedulerScorePluginName,
+				Name: simontype.SimonPluginName,
 			},
 		},
 		Disabled: []kubeschedulerconfig.Plugin{

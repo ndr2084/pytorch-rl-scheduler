@@ -1,60 +1,82 @@
-# 🚀 Kubernetes Scheduler Simulator With an MLP Scheduler
+# 🚀 Kubernetes Scheduler Simulator With a PyTorch RL Scheduler
 
 ## 🙏🏻 Acknowledge
 
-This project seeks to extend the functionality of the simulator developed by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator). 
+This project seeks to extend the functionality of the simulator developed by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator).
 
-
-## 🚧 Environment Setup  
+## 🚧 Environment Setup
 
 1. Please ensure that Go is installed.
 
-`go mod vendor` installs the dependencies required for the simulator. 
+`go mod vendor` installs the dependencies required for the simulator.
 
 ```bash
 $ go mod vendor
 ```
-2. Please ensure the following are installed:  
-`pip install torch` installs the dependencies required for the rl-based scheduler  
-`pip install flask` installs the dependencies required to capture the pods from the cluster and assign scores via http requests  
-`pip install numpy` torch has dependency on numpy  
-* ✅ for convenience, we have added torch and flask in the requirements.txt file provided by [hkust-adsl](https://github.com/hkust-adsl/kubernetes-scheduler-simulator).
+
+2. Please ensure the base Python dependencies are installed:
 
 ```bash
 $ pip install -r requirements.txt
 ```
 
+3. The RL scheduler itself (training + serving) has its own dependencies (PyTorch, gRPC, pandas) kept separate from the base `requirements.txt` above, since they're only needed if you're using `RLScore`:
+
+```bash
+$ rlscore/run.sh setup
+```
+
 ## 🤔 How The Scheduler Was Implemented
 
-After adding a new scheduler to `~./pkg/simulator/plguin`, we had to: 
-1. add the scheduler to the appropriate plugin options under `func GetAndSetSchedulerConfig` in `~./pkg/simulator/utils.go`
-2. register the new policy under `func New(opts ...Option) (Interface, error)` in `~./pkg/simulator/simulator.go`
-3. `make` to generate the compiled binary files in the `bin` directory.
-   
+After adding a new scheduler to `~./pkg/simulator/plugin`, we had to:
+1. register the new policy under `func New(opts ...Option) (Interface, error)` in `~./pkg/simulator/simulator.go`
+2. `make` to generate the compiled binary files in the `bin` directory.
+
 ```bash
 $ make
 ```
-You can follow steps 1 through 3 to implement your own scheduler as well
 
-## 🔥 How rl_scheduler_score.go Communicates With rl_service.py 
-### 🚧 Allow the MLP (i.e. rl_service.py) to receive http requests from the rl_scheduler_score.go plugin  
+You can follow steps 1 and 2 to implement your own scheduler as well. `RLScore` doesn't need a change to `pkg/simulator/utils.go`'s Go-side default plugin list — it's activated purely via a scheduler-config YAML's `pluginConfig`, the same way you'd pick between `FGDScore`/`BestFitScore`/etc. That's a deliberate choice: `RLScore` depends on an external process being reachable (see below), so it shouldn't be silently on by default.
 
-in directory `~./example/pytorch-rl`, run the scheduler so it can capture the pod data that will be sent from `~./pkg/simulator/plguin/rl_scheduler_score.go`
+## 🔥 How RLScore Talks To The Policy Server
+
+The Go plugin (`pkg/simulator/plugin/rl_score.go`) and the Python policy server (`rlscore/server.py`) communicate over **gRPC**, not HTTP — the wire contract lives in `pkg/rlscore/proto/rlscore.proto`, and both sides are generated from that one file so they can't drift apart by hand-editing one side.
+
+Start the policy server first (it needs to be running before you schedule anything against `RLScore`):
 
 ```bash
-$ python rl_service.py
+$ rlscore/run.sh serve
 ```
 
-To create the simulation, both a cluster configuration file and a scheduler configuration file need to be passed as parameters to `simon apply` 
+Then pass both a cluster configuration and a scheduler configuration to `simon apply`:
 
 ```bash
 $ bin/simon apply --extended-resources "gpu" \
-                  -f path/to/test-cluster-config.yaml \
-                  -s path/to/test-scheduler-config.yaml
+                  -f example/test-cluster-config.yaml \
+                  -s example/rl-scheduler-config.yaml
 ```
 
+`example/rl-scheduler-config.yaml` points `RLScore` at `localhost:50051` by default — see `rlscore/server.py --port` if you want it elsewhere.
 
-## 🚧  Topology Aware Functionality Added 
+### Training a policy
+
+`rlscore/train.py` trains the network with PPO against a training environment (`rlscore/env.py`) that replays real `data/csv/openb_pod_list_*.csv` traces, using a reward ported directly from `pkg/utils/frag.go`'s fragmentation metric — the same quantity `FGDScorePlugin` minimizes, so a trained policy is directly comparable to that baseline.
+
+```bash
+$ rlscore/run.sh train
+```
+
+writes a checkpoint to `rlscore/checkpoint.pt`, which `rlscore/run.sh serve` loads automatically.
+
+### Running your own scheduler script against RLScore
+
+`scripts/generate_config_and_run.py` (the same tool used to generate configs for all the built-in baselines) knows about `RLScore` too — activate it the same way you'd activate any other policy, via `-RL <weight>`:
+
+```bash
+$ python3 scripts/generate_config_and_run.py -d <experiment-dir> -f <trace-folder> -RL 1000 -e -b
+```
+
+## 🚧 Topology Aware Functionality Added
 
 `~./create_hierarchical_yamls.py` prepares hierarchical cluster YAMLs for the Kubernetes simulator
 experiments.  It traverses the data directory, finds each workload directory
@@ -88,8 +110,6 @@ nodes in the node list: the first ``servers_per_rack`` nodes go into
 rack 0 (servers 0, 1, …), the next ``servers_per_rack`` nodes go into
 rack 1, and so on.  Adjust ``servers_per_rack`` for your own topology.
 
-## ⏳ TODO
+## 📜 History
 
-- [ ] Currently Pods are not being assigned to nodes. It needs to be determined whether:
-  `~./example/pytorch-rl/rl_policy.py`  and/or
-  `~./pkg/simulator/plugin/rl_scheduler_score.go` are to blame. [failure_log.txt](https://github.com/ndr2084/pytorch-rl-scheduler/blob/main/failure_log.txt) is a log of the failed integration of implementing our MLP based scheduler on the cluster. 
+This project's first attempt at an RL scheduler (`rl_scheduler_score.go`, communicating with a Flask HTTP service) is what `failure_log.txt` documents — it did not successfully schedule pods. It's been replaced by the gRPC/PyTorch implementation described above, which has been run end-to-end against the full real `openb_pod_list_default` trace (8,152 pods, 1,213 nodes) and benchmarked against the built-in baseline policies.
